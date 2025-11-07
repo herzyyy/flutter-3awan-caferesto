@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/caferesto_model.dart';
+import '../models/menu_model.dart';
 
 class CartProvider extends ChangeNotifier {
   final Map<Menu, int> _items = {};

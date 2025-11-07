@@ -19,7 +19,7 @@ class Menu {
       name: json['name'],
       price: (json['price'] as num).toDouble(),
       category: json['category'],
-      imageUrl: json['image_url'],
+      imageUrl: json['image_url'] ?? '',
     );
   }
 }
