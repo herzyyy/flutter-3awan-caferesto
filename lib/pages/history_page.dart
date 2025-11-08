@@ -336,8 +336,9 @@ class _HistoryPageState extends State<HistoryPage> {
                                             height: 50,
                                             fit: BoxFit.cover,
                                             loadingBuilder: (context, child, loadingProgress) {
-                                              if (loadingProgress == null)
+                                              if (loadingProgress == null) {
                                                 return child;
+                                              }
                                               return Container(
                                                 width: 50,
                                                 height: 50,

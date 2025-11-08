@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 import '../providers/cart_provider.dart';
 import '../providers/transaction_provider.dart';
 
-
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
 
@@ -33,7 +32,7 @@ class _CartPageState extends State<CartPage> {
     final timestamp = now.millisecondsSinceEpoch;
     final random = Random().nextInt(9999).toString().padLeft(4, '0');
     final timestampStr = timestamp.toString();
-    final last8Digits = timestampStr.length >= 8 
+    final last8Digits = timestampStr.length >= 8
         ? timestampStr.substring(timestampStr.length - 8)
         : timestampStr.padLeft(8, '0');
     return 'ORD-$last8Digits-$random';
@@ -52,9 +51,7 @@ class _CartPageState extends State<CartPage> {
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Row(
           children: [
             Container(
@@ -73,10 +70,7 @@ class _CartPageState extends State<CartPage> {
             const Expanded(
               child: Text(
                 'Pesanan Berhasil!',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
           ],
@@ -134,17 +128,14 @@ class _CartPageState extends State<CartPage> {
                 ),
               ),
               const SizedBox(height: 20),
-              
+
               // Detail Pesanan
               const Text(
                 'Detail Pesanan',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
-              
+
               // Total Item
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -157,10 +148,7 @@ class _CartPageState extends State<CartPage> {
                         color: Colors.grey.shade600,
                       ),
                       const SizedBox(width: 8),
-                      const Text(
-                        'Total Item',
-                        style: TextStyle(fontSize: 14),
-                      ),
+                      const Text('Total Item', style: TextStyle(fontSize: 14)),
                     ],
                   ),
                   Text(
@@ -173,7 +161,7 @@ class _CartPageState extends State<CartPage> {
                 ],
               ),
               const SizedBox(height: 10),
-              
+
               // Total Harga
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -186,10 +174,7 @@ class _CartPageState extends State<CartPage> {
                         color: Colors.grey.shade600,
                       ),
                       const SizedBox(width: 8),
-                      const Text(
-                        'Total Harga',
-                        style: TextStyle(fontSize: 14),
-                      ),
+                      const Text('Total Harga', style: TextStyle(fontSize: 14)),
                     ],
                   ),
                   Text(
@@ -203,7 +188,7 @@ class _CartPageState extends State<CartPage> {
                 ],
               ),
               const SizedBox(height: 10),
-              
+
               // Metode Pembayaran
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -255,17 +240,14 @@ class _CartPageState extends State<CartPage> {
                 ],
               ),
               const SizedBox(height: 20),
-              
+
               // Info
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: Colors.green.shade50,
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                    color: Colors.green.shade200,
-                    width: 1,
-                  ),
+                  border: Border.all(color: Colors.green.shade200, width: 1),
                 ),
                 child: Row(
                   children: [
@@ -337,10 +319,7 @@ class _CartPageState extends State<CartPage> {
           flexibleSpace: Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  Color(0xFF1565C0),
-                  Color(0xFF42A5F5),
-                ],
+                colors: [Color(0xFF1565C0), Color(0xFF42A5F5)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -385,10 +364,7 @@ class _CartPageState extends State<CartPage> {
           ? const Center(
               child: Text(
                 'Belum ada pesanan 😕',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.black54,
-                ),
+                style: TextStyle(fontSize: 18, color: Colors.black54),
               ),
             )
           : Column(
@@ -432,8 +408,10 @@ class _CartPageState extends State<CartPage> {
                                     width: 70,
                                     height: 70,
                                     color: Colors.grey[300],
-                                    child: const Icon(Icons.broken_image,
-                                        color: Colors.grey),
+                                    child: const Icon(
+                                      Icons.broken_image,
+                                      color: Colors.grey,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -477,7 +455,10 @@ class _CartPageState extends State<CartPage> {
                                       ),
                                       onPressed: () {
                                         cartProvider.removeItem(menu);
-                                        _checkIfCartEmpty(context, cartProvider);
+                                        _checkIfCartEmpty(
+                                          context,
+                                          cartProvider,
+                                        );
                                       },
                                     ),
                                     Text(
@@ -508,8 +489,10 @@ class _CartPageState extends State<CartPage> {
 
                 // 🔹 Metode Pembayaran
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -519,7 +502,7 @@ class _CartPageState extends State<CartPage> {
                           color: Colors.black.withOpacity(0.05),
                           blurRadius: 6,
                           offset: const Offset(2, 2),
-                        )
+                        ),
                       ],
                     ),
                     child: Padding(
@@ -541,8 +524,11 @@ class _CartPageState extends State<CartPage> {
                                 child: RadioListTile<String>(
                                   title: const Row(
                                     children: [
-                                      Icon(Icons.payments_outlined,
-                                          color: Colors.green, size: 20),
+                                      Icon(
+                                        Icons.payments_outlined,
+                                        color: Colors.green,
+                                        size: 20,
+                                      ),
                                       SizedBox(width: 6),
                                       Text('Tunai'),
                                     ],
@@ -561,8 +547,11 @@ class _CartPageState extends State<CartPage> {
                                 child: RadioListTile<String>(
                                   title: const Row(
                                     children: [
-                                      Icon(Icons.qr_code_2_rounded,
-                                          color: Colors.deepPurple, size: 20),
+                                      Icon(
+                                        Icons.qr_code_2_rounded,
+                                        color: Colors.deepPurple,
+                                        size: 20,
+                                      ),
                                       SizedBox(width: 6),
                                       Text('QRIS'),
                                     ],
@@ -587,8 +576,10 @@ class _CartPageState extends State<CartPage> {
 
                 // 🔹 Total & tombol selesai
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 16,
+                  ),
                   decoration: const BoxDecoration(
                     gradient: LinearGradient(
                       colors: [Color(0xFF1565C0), Color(0xFF42A5F5)],
@@ -641,14 +632,19 @@ class _CartPageState extends State<CartPage> {
                               final orderCode = _generateOrderCode();
                               final transactionProvider =
                                   Provider.of<TransactionProvider>(
-                                context,
-                                listen: false,
-                              );
+                                    context,
+                                    listen: false,
+                                  );
 
                               // Simpan data cart sebelum clear
-                              final savedItems = Map<dynamic, int>.from(cartProvider.items);
+                              final savedItems = Map<dynamic, int>.from(
+                                cartProvider.items,
+                              );
                               final savedTotalPrice = cartProvider.totalPrice;
-                              final savedTotalItems = savedItems.values.fold(0, (sum, qty) => sum + qty);
+                              final savedTotalItems = savedItems.values.fold(
+                                0,
+                                (sum, qty) => sum + qty,
+                              );
 
                               // Menampilkan loading indicator
                               showDialog(
@@ -671,10 +667,10 @@ class _CartPageState extends State<CartPage> {
                                   Navigator.pop(context);
                                 }
 
-                                // Clear cart sebelum menampilkan popup
+                                // Hanya clear cart jika semua transaksi berhasil disimpan
                                 cartProvider.clearCart();
 
-                                // Menampilkan popup sukses dengan detail pesanan (tanpa await untuk menghindari delay)
+                                // Menampilkan popup sukses dengan detail pesanan
                                 if (context.mounted) {
                                   _showSuccessDialog(
                                     context,
@@ -690,13 +686,60 @@ class _CartPageState extends State<CartPage> {
                                   Navigator.pop(context);
                                 }
 
-                                // Menampilkan pesan error
+                                // Menampilkan pesan error yang lebih informatif
                                 if (context.mounted) {
+                                  String errorMessage =
+                                      'Gagal menyimpan transaksi';
+                                  final errorStr = e.toString();
+
+                                  if (errorStr.contains('Gagal terhubung') ||
+                                      errorStr.contains('Failed to fetch') ||
+                                      errorStr.contains('koneksi internet')) {
+                                    errorMessage =
+                                        'Tidak dapat terhubung ke server.\nPeriksa koneksi internet Anda dan coba lagi.';
+                                  } else if (errorStr.contains('timeout') ||
+                                      errorStr.contains('Timeout')) {
+                                    errorMessage =
+                                        'Server tidak merespons.\nSilakan coba lagi dalam beberapa saat.';
+                                  } else if (errorStr.contains(
+                                    'tidak ditemukan di database',
+                                  )) {
+                                    errorMessage =
+                                        'Transaksi gagal tersimpan di database.\nSilakan coba lagi.';
+                                  } else if (errorStr.contains('Status')) {
+                                    errorMessage =
+                                        'Server error.\nSilakan coba lagi atau hubungi administrator.';
+                                  } else {
+                                    // Ambil pesan error yang lebih user-friendly
+                                    if (errorStr.contains('Exception:')) {
+                                      final parts = errorStr.split(
+                                        'Exception:',
+                                      );
+                                      if (parts.length > 1) {
+                                        errorMessage = parts.last.trim();
+                                      } else {
+                                        errorMessage =
+                                            'Terjadi kesalahan saat menyimpan transaksi.\nSilakan coba lagi.';
+                                      }
+                                    } else {
+                                      errorMessage =
+                                          'Terjadi kesalahan saat menyimpan transaksi.\nSilakan coba lagi.';
+                                    }
+                                  }
+
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text(
-                                          'Gagal menyimpan transaksi: $e'),
+                                        errorMessage,
+                                        style: const TextStyle(fontSize: 14),
+                                      ),
                                       backgroundColor: Colors.red,
+                                      duration: const Duration(seconds: 6),
+                                      action: SnackBarAction(
+                                        label: 'OK',
+                                        textColor: Colors.white,
+                                        onPressed: () {},
+                                      ),
                                     ),
                                   );
                                 }

@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 class TransactionProvider extends ChangeNotifier {
   final List<Transaction> _transactions = [];
   final Map<int, Menu> _menuCache = {};
-  int _nextId = 1;
+  int _nextId = -1; // Gunakan ID negatif untuk membedakan ID lokal dengan ID dari server
 
   List<Transaction> get transactions =>
       List.unmodifiable(_transactions.reversed);
@@ -31,6 +31,9 @@ class TransactionProvider extends ChangeNotifier {
     final dateFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
     final createdAt = dateFormatter.format(now);
 
+    // List untuk menyimpan transaksi yang berhasil
+    final List<Transaction> savedTransactions = [];
+
     // Membuat transaction untuk setiap item di cart dan cache menu
     for (var entry in items.entries) {
       final menu = entry.key;
@@ -53,24 +56,42 @@ class TransactionProvider extends ChangeNotifier {
         final savedTransaction = await ApiService.createTransaction(
           transaction,
         );
-        _transactions.add(savedTransaction);
+        
+        // Langsung tambahkan ke list jika berhasil (tidak perlu validasi tambahan)
+        if (savedTransaction.id > 0) {
+          savedTransactions.add(savedTransaction);
+        } else {
+          // Jika ID 0, gunakan transaksi lokal
+          final localTransaction = Transaction(
+            id: _nextId--,
+            menuId: menu.id,
+            quantity: quantity,
+            totalPrice: menu.price * quantity,
+            paymentMethod: paymentMethod,
+            createdAt: createdAt,
+          );
+          savedTransactions.add(localTransaction);
+        }
       } catch (error) {
-        // Jika gagal menyimpan ke API, tetap simpan lokal dengan ID sementara
+        // Jika gagal ke API, simpan lokal saja
         final localTransaction = Transaction(
-          id: _nextId++,
+          id: _nextId--,
           menuId: menu.id,
           quantity: quantity,
           totalPrice: menu.price * quantity,
           paymentMethod: paymentMethod,
           createdAt: createdAt,
         );
-        _transactions.add(localTransaction);
-        // Bisa menambahkan error handling atau logging di sini
-        debugPrint('Gagal menyimpan transaksi ke API: $error');
+        savedTransactions.add(localTransaction);
+        debugPrint('⚠️ Gagal ke API, disimpan lokal: ${menu.name}');
       }
     }
 
+    // Langsung tambahkan semua transaksi ke riwayat (tidak perlu validasi)
+    _transactions.addAll(savedTransactions);
     notifyListeners();
+    
+    debugPrint('✅ ${savedTransactions.length} transaksi ditambahkan ke riwayat');
   }
 
   /// Menghapus transaksi berdasarkan ID
@@ -82,7 +103,7 @@ class TransactionProvider extends ChangeNotifier {
   /// Menghapus semua transaksi
   void clearTransactions() {
     _transactions.clear();
-    _nextId = 1;
+    _nextId = -1;
     notifyListeners();
   }
 
@@ -114,10 +135,33 @@ class TransactionProvider extends ChangeNotifier {
       // Memuat transaksi
       try {
         transactions = await ApiService.fetchTransactions();
+        
+        // Merge data dari API dengan data lokal (jangan hapus data lokal yang belum tersimpan ke API)
+        // Buat map untuk tracking transaksi yang sudah ada di API
+        final Map<String, Transaction> apiTransactionsMap = {};
+        for (var t in transactions) {
+          // Gunakan kombinasi menu_id, quantity, total_price, dan created_at sebagai key unik
+          final key = '${t.menuId}_${t.quantity}_${t.totalPrice}_${t.createdAt}';
+          apiTransactionsMap[key] = t;
+        }
+        
+        // Simpan data lokal yang belum ada di API
+        final List<Transaction> localOnlyTransactions = [];
+        for (var localT in _transactions) {
+          final key = '${localT.menuId}_${localT.quantity}_${localT.totalPrice}_${localT.createdAt}';
+          // Jika transaksi lokal tidak ada di API dan memiliki ID negatif (ID lokal), berarti belum tersimpan ke API
+          if (!apiTransactionsMap.containsKey(key) && localT.id < 0) {
+            localOnlyTransactions.add(localT);
+          }
+        }
+        
+        // Clear dan replace dengan data dari API + data lokal yang belum tersimpan
         _transactions.clear();
         _transactions.addAll(transactions);
+        _transactions.addAll(localOnlyTransactions);
       } catch (e) {
         debugPrint('Gagal memuat transaksi dari API: $e');
+        // Jika gagal memuat dari API, tetap pertahankan data lokal
         // Tetap lanjutkan untuk memuat menu
       }
 
